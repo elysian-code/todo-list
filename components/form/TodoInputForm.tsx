@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { ITodo } from "@/types";
 import { _createTodo } from "@/app/_actions/todo.crud";
+import { DatePickerDemo } from "../ui/date-picker";
 export default function TodoInputForm({}) {
   const form = useForm<ITodo>({
     defaultValues: {
@@ -27,8 +28,8 @@ export default function TodoInputForm({}) {
   //   form.getValues('')
   //   let _title = "abc";
   return (
-    <div>
-      <Input
+    <div className="flex  items-center space-x-2 border-2 mt-3 rounded-md" >
+      <Input className="h-8 border-none focus:border-none"
         {...form.register("task")}
         onKeyDown={(e) => {
           if (e.code == "Enter") {
@@ -37,6 +38,7 @@ export default function TodoInputForm({}) {
           }
         }}
       />
+      <DatePickerDemo form={form} {...form.register("dueDate")}/>
     </div>
   );
 }

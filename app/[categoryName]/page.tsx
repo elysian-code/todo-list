@@ -19,7 +19,7 @@ export default async function TodoPage({
   const todos = await _getTodos(categoryName);
   console.log(todos);
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <SideBar currentCategory={categoryName} />
       <TodoList todos={todos as any} />
     </div>
