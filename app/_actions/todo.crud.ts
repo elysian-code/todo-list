@@ -81,40 +81,42 @@ export async function _createTodo(todo: ITodo) {
 }
 
 
- async function upD(id:number,check:boolean) {
-  if (check){
-      const uCom = await prisma.todos.update({
-      where: {
-        id: id
-      },
-      data:{
-        completed: true
-      }
-    })
-    
-    return uCom
-  }else {
-    const uCom = await prisma.todos.update({
-      where: {
-        id: id
-      },
-      data:{
-        completed: false
-      }
-    })
-    
-    return uCom
-  }
-  
+export async function upD(id:number,check:boolean) {
+  const uCom = await prisma.todos.update({
+    where: {
+      id: id
+    },
+    data:{
+      completed: false
+    }
+  })
+  revalidatePath("/[categoryName]")
+  return uCom
+}
+export async function upD2(id:number,check:boolean) {
+  const uCom = await prisma.todos.update({
+    where: {
+      id: id
+    },
+    data:{
+      completed: true
+    }
+  })
+  revalidatePath("/[categoryName]")
+  return uCom
 }
 
+
 export async function upDateCompleted(id:number,check:boolean) {
+  console.log('here')
   try {
-    upD(id,check)
+    
+    await upD(id,check)
   } catch (error) {
     console.error(error);
     
   }finally{
+    revalidatePath("/[categoryName]")
     return revalidatePath("/[categoryName]")
   }
 }
