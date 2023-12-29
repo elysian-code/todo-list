@@ -33,6 +33,7 @@ model Todos {
 model Categories {
   id        Int       @id @default(autoincrement())
   title     String    @unique
+  color     String?
   todos     Todos[]
   createdAt DateTime?
   updatedAt DateTime?

@@ -2,10 +2,12 @@
 import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { useState } from "react";
-import { ITodo } from "@/types";
+import { ICategory, ITodo } from "@/types";
 import { _createTodo } from "@/app/_actions/todo.crud";
 import { DatePickerDemo } from "../ui/date-picker";
-export default function TodoInputForm({}) {
+import CategoryPicker from "../category-picker";
+import { Categories } from "@prisma/client";
+export default function TodoInputForm({categories}:{categories: Categories[]}) {
   const form = useForm<ITodo>({
     defaultValues: {
       task: "",
@@ -39,6 +41,7 @@ export default function TodoInputForm({}) {
         }}
       />
       <DatePickerDemo form={form} {...form.register("dueDate")}/>
+      <CategoryPicker form={form} categories={categories}/>
     </div>
   );
 }

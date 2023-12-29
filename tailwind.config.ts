@@ -1,4 +1,11 @@
 /** @type {import('tailwindcss').Config} */
+
+const safelist: any = [];
+["blue", "sky", "green", "yellow", "red", "pink", "purple", "gray"].map((c) => {
+  ["600", "300", "400", "800"].map((o) => {
+    safelist.push(`bg-${c}-${o} border-${c}-${o}`);
+  })
+});
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -7,6 +14,7 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
 	],
+  safelist,
   theme: {
     container: {
       center: true,
