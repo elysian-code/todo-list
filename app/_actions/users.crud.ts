@@ -1,9 +1,36 @@
 "use server";
 
 import { prisma } from "@/db";
+import { revalidatePath } from "next/cache";
 
-// export async function _createUser() {}
-// export async function _updateUser() {}
+
+
+    interface IUser {
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+        
+    }
+
+export async function _createUser(userData: IUser) {
+
+	try {
+		await prisma.user.create({
+							data: {
+								...userData,
+									createdAt: new Date(),
+									updatedAt: new Date(),
+							},
+					});
+					revalidatePath("/[categoryName]");
+			}catch (error) {
+				console.log(error)
+				
+			}
+		
+}
+// export async function_updateUser() {}
 // export async function _getUsers() {
 //   const users = await prisma.user.findMany({
 //     where: {

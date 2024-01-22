@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Icons } from "./Icons";
-import { _getCount } from "@/app/_actions/todo.crud";
 import CategoryIcon from "./category-icon";
 import { useForm } from "react-hook-form";
 import { useState } from "react"
@@ -13,28 +12,23 @@ import { cn } from "@/lib/utils";
 import { _createCategory } from "@/app/_actions/categories.crud";
 import { ICategory, ITodo } from "@/types";
 import { Categories } from "@prisma/client";
-import { log } from "console";
+import { useSession } from "next-auth/react";
+
 
 interface Props {
   currentCategory: string;
-  todos:ITodo[]
-  count: {
-    home: Promise<number>
-    completed: Promise<number>
-    today: Promise<number>
-  }
-
+  todos:ITodo[];
   categories: Categories[];
  
 }
-export default function SideBar({ currentCategory, count, categories}: Props) {
-  console.log(count.completed);
+export default function SideBar({ currentCategory, categories}: Props) {
+  
   
   
   const defaultCategories = [
-    { title: "Home", Icon: Icons.home, todoCount: count.home },
-    { title: "Completed", Icon: Icons.completed, todoCount: count.completed },
-    { title: "Today", Icon: Icons.today, todoCount: count.today },
+    { title: "Home", Icon: Icons.home },
+    { title: "Completed", Icon: Icons.completed },
+    { title: "Today", Icon: Icons.today },
   ];
   
   return (
@@ -66,14 +60,20 @@ export default function SideBar({ currentCategory, count, categories}: Props) {
 
 
 function NewTodoCategoryForm({}) {
+  const { data: session } = useSession()
   const form = useForm({
     defaultValues: {
       title: "",
       color: "",
+      UserId: session?.user?.id
     },
   });
   async function saveCategory() {
-    const data = form.getValues();
+    // const data = form.getValues();
+    let data = form.getValues();
+    data.UserId = session?.user?.id;
+    console.log(data.UserId)
+    console.log(data);
     await _createCategory(data);
     form.reset({
       color: "yellow-600",

@@ -28,9 +28,9 @@ export default function CategoryPicker({
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button className="h-8 space-x-2" variant={"secondary"}>
-            <CategoryIcon color={color || "gray"} />
+            <CategoryIcon color={color||"gray"} />
             <p className="font-semibold text-muted-foreground">
-              {title || "No List"}
+              {title||"No list"}
             </p>
             <ChevronDown className="w-3 h-3" />
           </Button>
