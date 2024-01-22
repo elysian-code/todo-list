@@ -15,6 +15,7 @@ onUnauthenticated() {
 
 if(!data?.user){
     return<>
+    loading...
     </>
 }
 

@@ -1,10 +1,12 @@
 "use client"
+
+
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Icons } from "./Icons";
 import CategoryIcon from "./category-icon";
 import { useForm } from "react-hook-form";
-import { useState } from "react"
+import React, { useState } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Input } from "./ui/input";
@@ -13,38 +15,40 @@ import { _createCategory } from "@/app/_actions/categories.crud";
 import { ICategory, ITodo } from "@/types";
 import { Categories } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useStateValue } from "@/app/toggleContext";
+import { _getCount } from "@/app/_actions/todo.crud";
+import { useTheme } from "next-themes";
 
 
 interface Props {
   currentCategory: string;
-  todos:ITodo[];
+  defaultCount: {
+    home: number;
+    completed: number;
+    today: number;
+};
   categories: Categories[];
  
 }
-export default function SideBar({ currentCategory, categories}: Props) {
+export default function SideBar({ currentCategory, defaultCount, categories}: Props) {
+
+  const { theme } = useTheme();
   
+  const { isOpen, setIsOpen } = useStateValue();
+
+  const home = { title: "Home", Icon: Icons.home , todoCount: defaultCount.home}
+  const completed = { title: "Completed", Icon: Icons.completed, todoCount: defaultCount.completed }
+  const today = { title: "Today", Icon: Icons.today, todoCount: defaultCount.today}
   
-  
-  const defaultCategories = [
-    { title: "Home", Icon: Icons.home },
-    { title: "Completed", Icon: Icons.completed },
-    { title: "Today", Icon: Icons.today },
-  ];
+  const allCategory = [home, completed, today, ...categories]
   
   return (
-    <div className="h-full p-3 w-3/12 rounded-md">
-      <aside className="border-2 rounded-3xl flex flex-col bg-slate-50 space-y-1 h-full p-8">
-        {defaultCategories.map((props, index) => (
-        <CategoryNavItem
-            currentCategory={currentCategory}
-            
-            key={index}
-            {...props}
-          />
-        ))}
-        {categories.map((category, index) => (
+    <div className={`${isOpen? 'block w-10/12' : 'hidden'} lg:block p-3 lg:w-3/12  rounded-md`}>
+    <aside className={`border-2 rounded-3xl flex flex-col ${theme=== 'dark'? 'bg-slate-950': 'bg-slate-50'} space-y-1 h-full p-8`}>
+        
+        {allCategory.map((category, index) => (
           <CategoryNavItem
-            todoCount={ category._count.todos }
+            todoCount={ category._count?.todos | category.todoCount }
             
             currentCategory={currentCategory}
             key={index}
@@ -116,7 +120,7 @@ function NewTodoCategoryForm({}) {
             saveCategory();
           }
         }}
-        className="border-none h-6 w-36 focus:outline-none focus:border-transparent"
+        className="border-none h-6 focus:outline-none focus:border-transparent"
         {...form.register("title")}
         placeholder="Create a new list"
       />
@@ -129,14 +133,19 @@ function CategoryNavItem({
   Icon,
   currentCategory,
   todoCount,
+  
 }: {
   title: string;
   Icon?: any;
   color?: string;
   currentCategory: string;
   todoCount?: number | Promise<number>;
+ 
 }) {
   // _getTodos()
+  const { theme } = useTheme();
+  const { isOpen, setIsOpen } = useStateValue()
+
   return (
     <Button
       asChild
@@ -145,6 +154,7 @@ function CategoryNavItem({
           ? "secondary"
           : "ghost"
       }
+      onClick={()=>setIsOpen(false)}
     >
       <Link href={`/${title}`} className="">
         <div className="flex-1 flex items-center space-x-2">
@@ -152,9 +162,15 @@ function CategoryNavItem({
           {color && <CategoryIcon color={color} />}
           <p className="font-semibold text-muted-foreground">{title}</p>
           
-          {/* <div>{todoCount || 0}</div> */}
+          
         </div>
+
+        <div>
+          <span className={`${theme === 'dark'? 'bg-slate-900': 'bg-slate-300'}  w-6 h-6 px-1 rounded-full`}>{todoCount}</span>
+        </div>
+        
       </Link>
+      
     </Button>
   );
 }

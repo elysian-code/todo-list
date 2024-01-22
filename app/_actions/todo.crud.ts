@@ -1,9 +1,7 @@
 "use server";
 
 import dayjs from "dayjs";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
-import { authOption } from "../utils/auth";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/db";
 import { ITodo } from "@/types";
@@ -49,9 +47,22 @@ export async function _getTodos(categoryName: string, UserId: number) {
       };
       break;
     default:
-      where.category = {
-        title: categoryName,
-      };
+      // where.category = {
+      //   title: categoryName,
+      // };
+
+      where.AND = [{
+        category: {
+          title: categoryName
+        }
+      }, 
+      {
+        OR:[{
+          completed: null
+        }, {
+          completed: false
+        }]
+      }]
   }
   
   const todos = await prisma.todos.findMany({
@@ -63,52 +74,68 @@ export async function _getTodos(categoryName: string, UserId: number) {
   });
   return todos;
 }
-// export async function _getTodos(categoryName: string) {
+export async function _getCount(categoryName: string, UserId: number) {
   
   
 
 
-//   //Home, Completed, Today
-//   const where: Prisma.TodosWhereInput = {
-//     deletedAt: null,
-//   };
-//   switch (categoryName) {
-//     case "Home":
-//       where.OR = [{ completed: false }, { completed: null }];
+ 
+  switch (categoryName) {
+    case "home":
+      var todoCount = await prisma.todos.count({
+        where:{
+          OR: [{completed: null}, {completed: false}],
+          User: {
+            id: UserId
+          }
+        }
+      })
+      
+      
+      break;
+    case "completed":
+      todoCount = await prisma.todos.count({
+        where: {
+          completed: true,
+          User: {
+            id: UserId
+          }
+        }
+      })
+      break;
+    case "today":
 
+      todoCount = await prisma.todos.count({
+        where: {
+          dueDate: {
+            gt: dayjs().subtract(1, "day").toISOString(),
+            lt: dayjs().add(1, "day").toISOString()
+          },
+          User: {
+            id: UserId
+          }
+        }
+      })
       
-
-//       //   {
-//       //     not: true,
-//       //   };
+      break;
+    default:
+      todoCount = await prisma.todos.count({
+        where: {
+          category: {
+            title: categoryName
+          },
+          User: {
+            id: UserId
+          }
+        }
+      })
       
-      
-//       break;
-//     case "Completed":
-//       where.completed = true;
-//       break;
-//     case "Today":
-//       where.dueDate = {
-        
-//         gt: dayjs().subtract(1, "day").toISOString(),
-//         lt: dayjs().add(1, "day").toISOString()
-//       };
-//       break;
-//     default:
-//       where.category = {
-//         title: categoryName,
-//       };
-//   }
+  }
   
-//   const todos = await prisma.todos.findMany({
-//     where,
-//     include: {
-//       category: true,
-      
-//     }
-//   });
-//   return todos;
-// }
+  
+  
+  return todoCount;
+}
 export async function _createTodo(todo: ITodo) {
   // todo.
   // todo.category.

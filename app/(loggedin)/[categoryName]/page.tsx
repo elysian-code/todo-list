@@ -1,14 +1,15 @@
 import SideBar from "@/components/SideBar";
 import TodoList from "@/components/TodoList";
 import { Metadata } from "next";
-import { _getTodos } from "../../_actions/todo.crud";
+import { _getCount, _getTodos } from "../../_actions/todo.crud";
 import { prisma } from "@/db";
 import { getServerSession } from "next-auth/next"
 import { authOption } from "../../utils/auth";
-import { redirect } from "next/dist/server/api-utils";
-import { Link } from "lucide-react";
-import { Button } from "react-day-picker";
-import LandingPage from "@/components/landing-page";
+import { Icons } from "@/components/Icons";
+import dayjs from "dayjs";
+import { useTheme } from "next-themes";
+
+
 
 
 export const metadata: Metadata = {
@@ -27,15 +28,16 @@ export default async function TodoPage({
 
   const session = await getServerSession(authOption);
   
-  
-
-  
-  
   console.log(`the current session is ${session}`);
   const userId = session?.user?.id
 
   const todos = await _getTodos(categoryName, userId);
-  console.log(todos);
+  const home = await _getCount("home", userId)
+  const completed = await _getCount("completed", userId)
+  const today = await _getCount("today", userId)
+  
+  const counts = {home: home, completed: completed, today: today}
+  
   const categories = await prisma.categories.findMany({
     where: {
       UserId: userId
@@ -56,11 +58,17 @@ export default async function TodoPage({
       },
     },
   });
+
+  
+  
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <SideBar currentCategory={categoryName}  categories={categories}/>
+    <div className={`flex h-screen overflow-hidden`}>
+      <SideBar currentCategory={categoryName} defaultCount={counts} categories={categories}/>
+      <div className="lg:w-2/3 md:w-4/5 sm:w-full mx-auto">
+        
+        <TodoList todos={todos as any} categories={categories}/>
+      </div>
       
-      <TodoList todos={todos as any} categories={categories}/>
     </div>
   );
 }
