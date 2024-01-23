@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Provider from './pages/_app'
-import { StateProvider } from './toggleContext'
+import { PopStateProvider, StateProvider } from './toggleContext'
 import { ThemeProvider } from '@/components/theme-provider'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -22,15 +22,17 @@ export default function RootLayout({
       <body className={inter.className}>
         <Provider>
           <StateProvider>
-            
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
+            <PopStateProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </PopStateProvider>
+          
           </StateProvider>
 
         </Provider>

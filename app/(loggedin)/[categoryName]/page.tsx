@@ -6,9 +6,6 @@ import { prisma } from "@/db";
 import { getServerSession } from "next-auth/next"
 import { authOption } from "../../utils/auth";
 import { Icons } from "@/components/Icons";
-import dayjs from "dayjs";
-import { useTheme } from "next-themes";
-
 
 
 
@@ -32,6 +29,7 @@ export default async function TodoPage({
   const userId = session?.user?.id
 
   const todos = await _getTodos(categoryName, userId);
+
   const home = await _getCount("home", userId)
   const completed = await _getCount("completed", userId)
   const today = await _getCount("today", userId)
@@ -50,7 +48,8 @@ export default async function TodoPage({
               OR: [{ completed: false }, { completed: null }],
               User: {
                 id: userId
-              }
+              },
+              deletedAt: null
 
             },
           },

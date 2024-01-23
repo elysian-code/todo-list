@@ -44,7 +44,9 @@ export async function _getTodos(categoryName: string, UserId: number) {
         
         gt: dayjs().subtract(1, "day").toISOString(),
         lt: dayjs().add(1, "day").toISOString()
-      };
+      },
+      where.OR = [ { completed: null }, { completed: false } ]
+
       break;
     default:
       // where.category = {
@@ -87,7 +89,8 @@ export async function _getCount(categoryName: string, UserId: number) {
           OR: [{completed: null}, {completed: false}],
           User: {
             id: UserId
-          }
+          },
+          deletedAt: null
         }
       })
       
@@ -99,7 +102,8 @@ export async function _getCount(categoryName: string, UserId: number) {
           completed: true,
           User: {
             id: UserId
-          }
+          },
+          deletedAt: null
         }
       })
       break;
@@ -113,8 +117,11 @@ export async function _getCount(categoryName: string, UserId: number) {
           },
           User: {
             id: UserId
-          }
-        }
+          },
+          deletedAt: null,
+          OR: [ { completed: null }, { completed: false } ]
+        },
+        
       })
       
       break;
@@ -126,7 +133,8 @@ export async function _getCount(categoryName: string, UserId: number) {
           },
           User: {
             id: UserId
-          }
+          },
+          updatedAt: null
         }
       })
       
@@ -199,6 +207,34 @@ export async function upDateCompleted(id:number,check:boolean) {
   return uCom
 }
 
+export async function _updateTodo(id: number, task: string){
+  await prisma.todos.update({
+    where: {
+      id: id
+    },
+    data: {
+      task: task,
+      updatedAt: new Date()
+
+    }
+  })
+  revalidatePath('/')
+ 
+}
+
+export async function _delete(id: number) {
+  await prisma.todos.update({
+    where: {
+      id: id
+    },
+    data: {
+      deletedAt: new Date()
+    }
+    
+  })
+  revalidatePath("/")
+}
+
 export async function _todoRecycleBin() {
   const todos = await prisma.todos.findMany({
     where: {
@@ -206,5 +242,6 @@ export async function _todoRecycleBin() {
         not: null,
       },
     },
-  });
+  })
+
 }
