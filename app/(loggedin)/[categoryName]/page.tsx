@@ -6,6 +6,9 @@ import { prisma } from "@/db";
 import { getServerSession } from "next-auth/next"
 import { authOption } from "../../utils/auth";
 import { Icons } from "@/components/Icons";
+import { useTheme } from "next-themes";
+import { checkTheme } from "@/components/mode-toggle";
+import Container from "@/components/container";
 
 
 
@@ -61,13 +64,15 @@ export default async function TodoPage({
   
   
   return (
-    <div className={`flex h-screen overflow-hidden`}>
-      <SideBar currentCategory={categoryName} defaultCount={counts} categories={categories}/>
-      <div className="lg:w-2/3 md:w-4/5 sm:w-full mx-auto">
+    <Container>
+      <div className={` flex justify-between h-screen overflow-hidden`}>
+        <SideBar currentCategory={categoryName} defaultCount={counts} categories={categories}/>
+        <div className="w-full mx-auto">  
+          <TodoList todos={todos as any} categories={categories}/>
+        </div>
         
-        <TodoList todos={todos as any} categories={categories}/>
       </div>
-      
-    </div>
+    </Container>
+    
   );
 }

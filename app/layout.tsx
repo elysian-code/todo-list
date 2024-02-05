@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Provider from './pages/_app'
-import { PopStateProvider, StateProvider } from './toggleContext'
+import { PopStateProvider, StateProvider, FocusProvider } from './toggleContext'
 import { ThemeProvider } from '@/components/theme-provider'
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,7 +30,9 @@ export default function RootLayout({
                 enableSystem
                 disableTransitionOnChange
               >
-                {children}
+                <FocusProvider>
+                  {children}
+                </FocusProvider>
               </ThemeProvider>
             </PopStateProvider>
           

@@ -21,26 +21,42 @@ interface Props {
 export function DatePickerDemo({form}:Props) {
   const [open, setOpen] = React.useState<boolean>(false)
   const date = form.watch('dueDate')
+
+  function handleRefCheck (this:any) {
+    let currentElement = this
+    while(currentElement){
+      if(currentElement.hasAttribute('ref') && currentElement.getAttribute('ref') === 'focusRef'){
+        return(console.log(true))
+      }
+      currentElement = currentElement.parentNode
+    }
+    return(console.log(false))
+  }
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <Popover  open={open}  onOpenChange={setOpen}>
+      <PopoverTrigger className="unaffected">
         <Button
+        
+        
           variant={"outline"}
+          
           className={cn(
-            "w-8 h-8 border-none p-0 justify-center inline-flex flex-row-reverse text-left font-normal",
+            "unaffected w-8 h-8 border-none p-0 justify-center inline-flex flex-row-reverse text-left font-normal",
             !date && "text-muted-foreground"
           )}
         >
-          <Badge className="w-1 h-1 mt-0" variant={
+          <Badge className="unaffected w-1 h-1 mt-0" variant={
             date? 'destructive':'secondary'
             }/>
-          <CalendarIcon className=" h-4 w-4" />
+          <CalendarIcon className="unaffected h-4 w-4" />
           {/* {date && date.toDateString()}  */}
           {/* {date ? format(date, "PPP") : <ShrinkIcon/>} */}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="unaffected w-auto p-0">
         <Calendar
+        className="unaffected"
           mode="single"
           selected={date as any}
           onSelect={(e)=> {

@@ -9,6 +9,7 @@ interface contextProps {
 
 const StateContext = createContext<contextProps | undefined>( undefined );
 const PopContext = createContext<{isPop: boolean; setIsPop: React.Dispatch<React.SetStateAction<boolean>>} | undefined>( undefined );
+const FocusContext = createContext<{focus: boolean; setFocus: React.Dispatch<React.SetStateAction<boolean>>} | undefined>( undefined );
 
 export const StateProvider = ({ children }: any) => {
 
@@ -35,6 +36,17 @@ export function PopStateProvider({children}: any){
 
 }
 
+export function FocusProvider({children}: any){
+
+  const [ focus, setFocus ] = useState(false)
+
+  return ( 
+    <FocusContext.Provider value={{focus, setFocus}}>
+      {children}
+    </FocusContext.Provider>
+  )
+}
+
 
 
 export const useStateValue = () =>{
@@ -53,3 +65,11 @@ export const usePopValue = () =>{
   }
   return context
 } 
+
+export const useFocusValue = () => {
+  const context = useContext(FocusContext)
+  if(!context){
+    throw new Error('useStateValue must be use inside the StateProvider ')
+  }
+  return context
+}

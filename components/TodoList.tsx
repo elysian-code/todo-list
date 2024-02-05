@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Categories } from "@prisma/client";
 import CategoryIcon from "./category-icon";
-import { signOut }from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import { useStateValue } from "@/app/toggleContext";
 import { Edit2Icon, Menu, MoreVertical, Trash2Icon } from "lucide-react"; 
@@ -50,11 +49,10 @@ export default function TodoList({ todos, categories }: Props) {
     }
   })
 
+  
   function toggle () {
     
     setIsOpen(true)
-    
-
     
   }
 
@@ -63,32 +61,39 @@ export default function TodoList({ todos, categories }: Props) {
 
   let userDetails = session?.user
   return (
-    <main className={`flex-col px-8  mx-auto }`} >
-      <div>
-        <div className={`flex justify-between lg:hidden ${isOpen? 'hidden' : 'block'} mt-4`}>
-        
-          <button onClick={()=>{
-            toggle();
-            console.log(isOpen)
-          }}>
-            <Menu className="sm:w-8 sm:h-8 md:w-10 md:h-10 mt-2" />
-          </button>
-        </div>
-        <span className="float-right mt-4">
-          <DottedMenu />
-        </span>
-      </div>
+    <main className={`sm:px-8 ${isOpen? ' md:flex-col': 'flex-col'} flex-col }`}  >
       
+        <div className={`flex justify-between w-full `}>
         
-      <div className="h-20 text-xl  pt-6">{ `${greetings} ${userDetails?.firstName} ${userDetails?.lastName}` }</div>
+          <button  onClick={()=>{
+            toggle();
+            
+          }}>
+            <Menu className={`lg:hidden ${isOpen? 'hidden' : 'block'} sm:w-8 sm:h-8 md:w-10 md:h-10 mt-2`} />
+          </button>
 
-      <TodoInputForm categories={categories} />
-      <ul className="flex flex-col mt-2 space-y-1">
-        {todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
+          <span className="mt-2">
+            <DottedMenu />
+          </span>
+       
+        </div>
+      
+      <div className="w-2/3 mx-auto ">
+        <div onClick={()=>setIsOpen(false)} className="h-20 text-xl flex-col ">
+          <p className="capitalize font-bold text-slate-600">{ `${greetings} ${userDetails?.firstName} ${userDetails?.lastName}` }</p>
+          <p className="text-slate-400 font-serif">{new Date().toDateString()}</p>
           
-        ))}
-      </ul>
+        </div>
+
+        <TodoInputForm categories={categories} />
+        <ul className="flex flex-col mt-2 space-y-1">
+          {todos.map((todo) => (
+            <TodoItem key={todo.id} todo={todo} />
+            
+          ))}
+        </ul>
+      </div>  
+      
       
     </main>
     
@@ -100,18 +105,18 @@ export default function TodoList({ todos, categories }: Props) {
     const [ task, setTask ] = useState(todo.task)
 
     function updateValue(){
-
       _updateTodo(todo.id, task)
     }
 
 
     return (
-      <li key={todo.id} className={`inline-flex items-center p-2 ${theme === 'dark'? 'bg-slate-950': 'bg-slate-50'}  rounded-md`}>
+      <li key={todo.id} onCanPlay={()=>setIsOpen(false)} className={`inline-flex group items-center
+      h-12 p-2 ${theme === 'dark'? 'bg-slate-950': 'bg-white'}  rounded-md`}>
         <div className="inline-flex flex-1 justify-between items-center p-2">
           
             <div className="flex">
               <Checkbox 
-                className="my-auto"
+                className="my-auto border-none bg-gray-200 h-5 w-5 rounded-md"
                 checked={check}
                 onCheckedChange={async(e)=> {
                   setCheck(e as any)
@@ -149,23 +154,23 @@ export default function TodoList({ todos, categories }: Props) {
             </div>
             
             <div className="flex justify-center text-center">
-            
-              <EditTodoIcon />
-            
+              <div className="group-hover:opacity-100 opacity-0">
+                <EditTodoIcon />
+              </div>
               {todo.categoryId && <CategoryIcon className='my-auto' color={todo.category?.color} />}
             </div>
-
+                    
         </div>
         
       </li>
     )
 
     
-    function EditTodoIcon(){
+    function EditTodoIcon(className?: string){
 
       return(
 
-        <Popover>
+        <Popover >
           <PopoverTrigger>
             <Button variant={"ghost"} size={"sm"} className="h-5 p-2 mr-2" >
               
@@ -196,7 +201,5 @@ export default function TodoList({ todos, categories }: Props) {
 
     }
   }
-
-
 
 }

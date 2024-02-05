@@ -8,22 +8,22 @@ import {
 import { LogOut, MoreVertical } from "lucide-react"
 import { Button } from "./ui/button"
 import { ModeToggle } from "./mode-toggle"
-import { useState } from "react"
 import { signOut } from "next-auth/react"
 import { usePopValue } from "@/app/toggleContext"
+import { useTheme } from "next-themes"
 
   
 export default function DottedMenu(){
 
 
   const { isPop, setIsPop } = usePopValue()
-  
+  const { theme } = useTheme()
 
   return(
       <>
         <Popover open={isPop} onOpenChange={setIsPop}>
           <PopoverTrigger>
-            <Button className="w-10 h10" variant={"outline"} size={"icon"}>
+            <Button className={`w-10 ${theme? '' : 'bg-gray-300'}  rounded-lg h10 `} variant={"outline"} size={"icon"}>
               <MoreVertical/>
             </Button>
                       

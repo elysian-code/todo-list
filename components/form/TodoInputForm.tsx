@@ -1,13 +1,16 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
-import { useState } from "react";
-import { ICategory, ITodo } from "@/types";
+import { useState, useEffect, useRef } from "react";
+import { ITodo } from "@/types";
 import { _createTodo } from "@/app/_actions/todo.crud";
 import { DatePickerDemo } from "../ui/date-picker";
 import CategoryPicker from "../category-picker";
 import { Categories } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { Label } from "../ui/label";
+import { useFocusValue } from "@/app/toggleContext";
+
 export default function TodoInputForm({categories}:{categories: Categories[]}) {
 
   const {data: session} = useSession()
@@ -15,7 +18,7 @@ export default function TodoInputForm({categories}:{categories: Categories[]}) {
   const form = useForm<ITodo>({
     defaultValues: {
       UserId: session?.user?.id,
-      task: "",
+      task: '',
       category: {
         title:'',
         color:''
@@ -30,11 +33,32 @@ export default function TodoInputForm({categories}:{categories: Categories[]}) {
     console.log(data.UserId)
     console.log(data);
     const todo = await _createTodo(data);
+    
     //    todo.category
   }
+
+  
+  useEffect(()=>{
+    const handleClick = (e: MouseEvent)=>{
+
+      
+      if(!e.target.classList.contains('unaffected')){
+        return console.log('outside')
+      }
+      console.log('inside')
+    }
+    document.addEventListener('click', handleClick)
+    return ()=>{
+      document.removeEventListener('click', handleClick)
+    }
+  },[])
+  
+  
   //   const cateDAte  =form.getValues('user.')
   //   cateDAte.
   //  const [title,date] = form.getValues(['title','date'])
+
+const { focus, setFocus } = useFocusValue()
 
   //   form.setValue('title','')
   //   // form.reset({});
@@ -44,19 +68,43 @@ export default function TodoInputForm({categories}:{categories: Categories[]}) {
   return (
     // <div>
     //   <div>{JSON.stringify(session?.user)}</div>
-      <div className="flex  items-center space-x-2 border-2 mt-3 rounded-md" >
-        
-      <Input className="h-8 border-none focus:border-none"
+      <div  onClick={()=>setFocus(true)} className="unaffected inp flex cursor-pointer items-center space-x-2 border-2 h-12 mt-3 rounded-lg" >
+
+        {focus? (<div className={`flex  bg-white items-center space-x-2 border-2 h-12 w-full rounded-lg`}>
+          <div className="bg-slate-200 my-1 rounded-md ml-3 ">
+            <div className="w-5 h-5"></div>
+          </div>
+          <Input className="unaffected h-8 border-none ml-0 "
         {...form.register("task")}
+        placeholder="Create new task"
+        
+        autoFocus={focus}
         onKeyDown={(e) => {
           if (e.code == "Enter") {
             // console.log("..");
             saveTodo();
+            
+            e.currentTarget.value = ''
+           
+          
           }
         }}
+        
+        
       />
-      <DatePickerDemo form={form} {...form.register("dueDate")}/>
-      <CategoryPicker form={form} categories={categories}/>
+      <div  className="unaffected flex justify-end px-3">
+        <DatePickerDemo form={form} {...form.register("dueDate")}/>
+        <CategoryPicker form={form} categories={categories}/>
+      </div>
+      </div>): (
+      <div className="flex justify-between items-center text-slate-400 w-full rounded-md">
+        
+        <Label className="ml-3"> Create new task</Label>
+        <div className="bg-slate-300 h-5 w-5 my-auto rounded-md items-center flex justify-center mx-3 text-center">E
+        </div>
+      </div>) }
+        
+      
     </div>
     // </div>
     

@@ -6,13 +6,12 @@ import { Button } from "./ui/button";
 import { Icons } from "./Icons";
 import CategoryIcon from "./category-icon";
 import { useForm } from "react-hook-form";
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 import { _createCategory } from "@/app/_actions/categories.crud";
-import { ICategory, ITodo } from "@/types";
 import { Categories } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useStateValue } from "@/app/toggleContext";
@@ -33,8 +32,20 @@ interface Props {
 export default function SideBar({ currentCategory, defaultCount, categories}: Props) {
 
   const { theme } = useTheme();
+
+  
   
   const { isOpen, setIsOpen } = useStateValue();
+
+  useEffect(()=>{
+    const handleOutsideClick = (e) => {
+      if(isOpen && !e.currentTarget.closest('.nav-bar')){
+        setIsOpen(false)
+      }
+      document.addEventListener('click', handleOutsideClick)
+    }
+    document.removeEventListener('click', handleOutsideClick)
+  },[isOpen])
 
   const home = { title: "Home", Icon: Icons.home , todoCount: defaultCount.home}
   const completed = { title: "Completed", Icon: Icons.completed, todoCount: defaultCount.completed }
@@ -43,7 +54,7 @@ export default function SideBar({ currentCategory, defaultCount, categories}: Pr
   const allCategory = [home, completed, today, ...categories]
   
   return (
-    <div className={`${isOpen? 'block w-10/12' : 'hidden'} lg:block p-3 lg:w-3/12  rounded-md`}>
+    <div className={`nav-bar ${isOpen? 'block sm:w-full' : 'hidden'} lg:block  p-3 lg:w-4/12  rounded-md`} onClick={()=> setIsOpen(false)}>
     <aside className={`border-2 rounded-3xl flex flex-col ${theme=== 'dark'? 'bg-slate-950': 'bg-slate-50'} space-y-1 h-full p-8`}>
         
         {allCategory.map((category, index) => (

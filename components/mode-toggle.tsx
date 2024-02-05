@@ -13,6 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { usePopValue } from "@/app/toggleContext"
 
+export const checkTheme = ()=>{
+
+  const { theme } = useTheme()
+  return theme
+}
+
 export function ModeToggle( ) {
   const { setTheme } = useTheme()
   const { setIsPop } = usePopValue()

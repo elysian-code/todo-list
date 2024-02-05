@@ -24,7 +24,7 @@ if(!data?.user){
     </>
 }
 
-// console.log(data)
+
     return <>
     {children}
     </>
