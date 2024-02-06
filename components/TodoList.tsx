@@ -9,7 +9,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Categories } from "@prisma/client";
 import CategoryIcon from "./category-icon";
 import { useSession } from 'next-auth/react'
-import { useStateValue } from "@/app/toggleContext";
+import { useFocusValue, useStateValue } from "@/app/toggleContext";
 import { Edit2Icon, Menu, MoreVertical, Trash2Icon } from "lucide-react"; 
 import { ModeToggle } from "./mode-toggle";
 import { useTheme } from "next-themes";
@@ -49,6 +49,7 @@ export default function TodoList({ todos, categories }: Props) {
     }
   })
 
+  const{ setFocus } = useFocusValue()
   
   function toggle () {
     
@@ -61,7 +62,10 @@ export default function TodoList({ todos, categories }: Props) {
 
   let userDetails = session?.user
   return (
-    <main className={`sm:px-8 ${isOpen? ' md:flex-col': 'flex-col'} flex-col }`}  >
+    <main onClick={(e)=>{
+      e.stopPropagation()
+      setFocus(false)
+    }} className={`sm:px-8 ${isOpen? ' md:flex-col': 'flex-col'} flex-col }`}  >
       
         <div className={`flex justify-between w-full `}>
         

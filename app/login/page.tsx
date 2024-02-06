@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { redirect } from 'next/navigation';
 
 const login = () => {
 
@@ -14,17 +15,21 @@ const login = () => {
             password: "",
         },
     })
-const s = useSession()
+  const { data } = useSession()
+
+  if(data){
+    redirect('./home')
+  }
+
   return (
     <div className='pt-10'>
-{JSON.stringify(s)}
+
         <form onSubmit={async (e) => {
             e.preventDefault()
             const res = await signIn('credentials', 
                 {email: form.getValues("email"), password: form.getValues("password"), callbackUrl:'/home'}
                 )
-                console.log(res)
-
+                
         }} className='flex flex-col gap-4 w-1/3 mx-auto mt-10 border-gray-200 border-2 p-4 rounded-md'>
             <div>
                 <label htmlFor="email">Email</label>

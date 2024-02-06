@@ -18,11 +18,11 @@ import { Check, ChevronDown } from "lucide-react";
 export default function CategoryPicker({
   form,
   categories,
-  catRef,
+  
 }: {
   form: UseFormReturn<ITodo>;
   categories: Categories[];
-  catRef?: any
+  
 }) {
   const color = form.watch("category.color");
   const title = form.watch("category.title");
@@ -34,13 +34,13 @@ export default function CategoryPicker({
   return (
     <div className="unaffected">
       <DropdownMenu >
-        <DropdownMenuTrigger className="unaffected">
+        <DropdownMenuTrigger className="unaffected ">
           <Button className="unaffected h-8 space-x-2" variant={"secondary"}>
             <CategoryIcon color={color||"gray"} />
             <p className="unaffected font-semibold text-muted-foreground">
               {title||"No list"}
             </p>
-            <ChevronDown className=" unaffected w-3 h-3" />
+            <ChevronDown className="unaffected w-3 h-3" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
