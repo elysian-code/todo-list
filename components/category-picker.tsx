@@ -51,8 +51,7 @@ export default function CategoryPicker({
                 form.setValue("category.title", c.title);
                 form.setValue("category.id", c.id);
                 form.setValue("category.color", c.color);
-                // form.setValue("category", { ...c });
-                // form.setValue('')
+
               }}
               key={c.id}
             >

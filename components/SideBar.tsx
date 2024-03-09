@@ -22,9 +22,9 @@ import { useTheme } from "next-themes";
 interface Props {
   currentCategory: string;
   defaultCount: {
-    home: number;
-    completed: number;
-    today: number;
+    home: number | undefined;
+    completed: number | undefined;
+    today: number | undefined;
 };
   categories: Categories[];
  
@@ -153,7 +153,7 @@ function CategoryNavItem({
   todoCount?: number | Promise<number>;
  
 }) {
-  // _getTodos()
+  
   const { theme } = useTheme();
   const { isOpen, setIsOpen } = useStateValue()
 

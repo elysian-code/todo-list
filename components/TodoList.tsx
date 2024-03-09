@@ -18,11 +18,6 @@ import { Input } from "./ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 
-
-
-
-
-
 interface Props {
   todos: ITodo[];
   categories: Categories[]
@@ -34,8 +29,6 @@ export default function TodoList({ todos, categories }: Props) {
   
   const { isOpen, setIsOpen } = useStateValue()
   const [greetings, setGreetings] = useState('')
-
-  // console.log(JSON.stringify(isOpen))
 
   useEffect(() =>{
     const currentTime = new Date().getHours();
@@ -84,7 +77,8 @@ export default function TodoList({ todos, categories }: Props) {
       
       <div className="w-2/3 mx-auto ">
         <div onClick={()=>setIsOpen(false)} className="h-20 text-xl flex-col ">
-          <p className="capitalize font-bold text-slate-600">{ `${greetings} ${userDetails?.firstName} ${userDetails?.lastName}` }</p>
+          <p className="capitalize font-bold text-slate-600">{ `${greetings}
+           ${userDetails?.firstName} ${userDetails?.lastName}` }</p>
           <p className="text-slate-400 font-serif">{new Date().toDateString()}</p>
           
         </div>
@@ -111,7 +105,6 @@ export default function TodoList({ todos, categories }: Props) {
     function updateValue(){
       _updateTodo(todo.id, task)
     }
-
 
     return (
       <li key={todo.id} onCanPlay={()=>setIsOpen(false)} className={`inline-flex group items-center
@@ -170,7 +163,7 @@ export default function TodoList({ todos, categories }: Props) {
     )
 
     
-    function EditTodoIcon(className?: string){
+    function EditTodoIcon(){
 
       return(
 

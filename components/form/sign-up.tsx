@@ -26,9 +26,6 @@ interface IData {
   password2: string;
 }
     
-
-
-
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       email: '',
@@ -40,7 +37,7 @@ interface IData {
   });
 
   const onSubmit = async (data: IData) => {
-    console.log(data);
+    
     if (data.password !== data.password2) {
       return toast.error('invalid password confirmation')
     }
