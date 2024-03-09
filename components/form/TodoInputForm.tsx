@@ -23,8 +23,6 @@ export default function TodoInputForm({categories}:{categories: Categories[]}) {
         title:'',
         color:''
       }
-
-      
     },
   });
   async function saveTodo() {
@@ -39,43 +37,19 @@ export default function TodoInputForm({categories}:{categories: Categories[]}) {
 
   const { theme } = useTheme()
   
-  // useEffect(()=>{
-  //   const handleClick = (e: MouseEvent)=>{
-  //     const inp = document.querySelector('.inp')
-      
-  //     if(e.target.classList.contains('unaffected') || e.target.classList.contains('light')){
-        
-  //       return(inp? inp.focus(): null)
-  //     }
-      
-  //   }
-  //   document.addEventListener('click', handleClick)
-  //   return ()=>{
-  //     document.removeEventListener('click', handleClick)
-  //   }
-  // },[])
   
-  
-  //   const cateDAte  =form.getValues('user.')
-  //   cateDAte.
-  //  const [title,date] = form.getValues(['title','date'])
-
 const { focus, setFocus } = useFocusValue()
 
-  //   form.setValue('title','')
-  //   // form.reset({});
-  //   const title = form.watch("title");
-  //   form.getValues('')
-  //   let _title = "abc";
+  
   return (
     // <div>
     //   <div>{JSON.stringify(session?.user)}</div>
-      <div  onClick={(e)=>{
+    <div  onClick={(e)=>{
         e.stopPropagation()
         setFocus(true)
-      }} className="unaffected inp flex cursor-pointer items-center space-x-2 border-2 h-12 mt-3 rounded-lg" >
+      }} className={`unaffected ${focus && theme === 'dark'? '' : !focus && theme === 'dark'? 'bg-slate-950': 'bg-gray-300'} inp flex cursor-pointer items-center space-x-2 h-12 border-none mt-3 rounded-lg`} >
 
-        {focus? (<div className={`flex ${theme === 'dark'? 'bg-gray-950':' bg-white'} items-center space-x-2 border-2 h-12 w-full rounded-lg`}>
+        {focus? (<div className={`flex ${theme === 'dark'? 'bg-slate-950':' bg-white'} items-center space-x-2 border-none h-12 w-full rounded-lg`}>
           <div className="bg-slate-200 my-1 rounded-md ml-3 ">
             <div className="w-5 h-5"></div>
           </div>
@@ -91,7 +65,6 @@ const { focus, setFocus } = useFocusValue()
             
             e.currentTarget.value = ''
            
-          
           }
         }}
         
@@ -102,16 +75,16 @@ const { focus, setFocus } = useFocusValue()
         <CategoryPicker form={form} categories={categories}/>
       </div>
       </div>): (
-      <div className="flex justify-between items-center text-slate-400 w-full rounded-md">
+      <div className={`flex justify-between items-center ${theme === 'dark'? '' : 'text-slate-400' } w-full rounded-md`}>
         
         <Label className="ml-3"> Create new task</Label>
-        <div className={`${theme === 'dark'? 'bg-black': 'bg-slate-300'}  h-5 w-5 my-auto rounded-md items-center flex justify-center mx-3 text-center`}>E
+        <div className={` ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-200'} h-5 w-5 my-auto rounded-md items-center flex justify-center mx-3 text-center`}>E
         </div>
       </div>) }
         
       
     </div>
-    // </div>
+   
     
   );
 }

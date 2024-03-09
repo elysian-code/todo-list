@@ -76,13 +76,14 @@ export const authOption: NextAuthOptions = {
         });
 
         if (!user) {
+          throw new Error('No user with this email')
           return null
         }
 
         const validPassword = password === user.password;
 
         if(!validPassword) {
-          
+          throw new Error('inavalid password')
           return null
         }
        

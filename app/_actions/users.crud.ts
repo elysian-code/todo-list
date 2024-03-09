@@ -30,6 +30,15 @@ export async function _createUser(userData: IUser) {
 			}
 		
 }
+
+export async function _getUser(email:string) {
+	const user = await prisma.user.findFirst({
+		where: {
+			email: email
+		}
+	})
+	return user
+}
 // export async function_updateUser() {}
 // export async function _getUsers() {
 //   const users = await prisma.user.findMany({

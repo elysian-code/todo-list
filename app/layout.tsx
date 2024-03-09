@@ -4,6 +4,8 @@ import './globals.css'
 import Provider from './pages/_app'
 import { PopStateProvider, StateProvider, FocusProvider } from './toggleContext'
 import { ThemeProvider } from '@/components/theme-provider'
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -31,6 +33,7 @@ export default function RootLayout({
                 disableTransitionOnChange
               >
                 <FocusProvider>
+                <ToastContainer autoClose={3000} />
                   {children}
                 </FocusProvider>
               </ThemeProvider>

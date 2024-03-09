@@ -10,7 +10,7 @@ export default function Container({children}: any) {
   const { theme } = useTheme()
 
   return (
-    <div className={`h-screen ${theme === 'dark'? 'bg-slate-900': 'bg-gradient-to-b from-gray-200'}`}>
+    <div className={`h-screen ${theme === 'dark'? '': 'bg-gradient-to-b from-gray-200'}`}>
         {children}
     </div>
   )

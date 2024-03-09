@@ -52,9 +52,9 @@ export default function SideBar({ currentCategory, defaultCount, categories}: Pr
   const today = { title: "Today", Icon: Icons.today, todoCount: defaultCount.today}
   
   const allCategory = [home, completed, today, ...categories]
-  
+  // fixed top-0 left-0 w-250 h-full bg-gray-800 text-white z-10 lg:z-2000
   return (
-    <div className={`nav-bar ${isOpen? 'block sm:w-full' : 'hidden'} lg:block  p-3 lg:w-4/12  rounded-md`} onClick={()=> setIsOpen(false)}>
+    <div className={`nav-bar ${isOpen? 'block md:z-1000 sm:w-full' : 'hidden'} lg:block  p-3 lg:w-4/12  rounded-md`} onClick={()=> setIsOpen(false)}>
     <aside className={`border-2 rounded-3xl flex flex-col ${theme=== 'dark'? 'bg-slate-950': 'bg-slate-50'} space-y-1 h-full p-8`}>
         
         {allCategory.map((category, index) => (
