@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth/next"
 import { authOption } from "../../utils/auth";
 import { Icons } from "@/components/Icons";
 import { useTheme } from "next-themes";
-import { checkTheme } from "@/components/mode-toggle";
+
 import Container from "@/components/container";
 
 
