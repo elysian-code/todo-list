@@ -11,7 +11,7 @@ import { _getUser } from '../_actions/users.crud';
 import { toast } from 'react-toastify'
 import {  useTheme } from 'next-themes';
 
-const login = () => {
+const Login = () => {
     
 
     const { control, handleSubmit, formState: { errors }} = useForm({
@@ -91,4 +91,4 @@ const login = () => {
   )
 }
 
-export default login
+export default Login
