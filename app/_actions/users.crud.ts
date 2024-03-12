@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 
 
-    interface IUser {
+    export interface IUser {
         email: string;
         password: string;
         firstName: string;

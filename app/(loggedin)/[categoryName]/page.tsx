@@ -9,7 +9,7 @@ import { Icons } from "@/components/Icons";
 import { useTheme } from "next-themes";
 
 import Container from "@/components/container";
-
+import { _getUser } from "@/app/_actions/users.crud";
 
 
 export const metadata: Metadata = {
@@ -29,7 +29,10 @@ export default async function TodoPage({
   const session = await getServerSession(authOption);
   
   console.log(`the current session is ${session}`);
-  const userId = session?.user?.id
+
+  const currentUser = _getUser(session?.user?.email as any)
+
+  const userId = currentUser?.id //session?.user?.id
 
   const todos = await _getTodos(categoryName, userId);
 

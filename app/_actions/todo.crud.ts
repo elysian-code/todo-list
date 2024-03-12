@@ -183,10 +183,11 @@ export async function _createTodo(todo: ITodo) {
         include: {
           category: true,
         },
+
       });
       revalidatePath("/[categoryName]");
       
-      return newTodo;
+     return !newTodo? null : newTodo;
   } catch (error) {
     console.log(error);
   }
