@@ -10,14 +10,16 @@ import { useSession } from "next-auth/react";
 import { Label } from "../ui/label";
 import { useFocusValue } from "@/app/toggleContext";
 import { useTheme } from "next-themes";
+import { _getUser } from "@/app/_actions/users.crud";
 
-export default function TodoInputForm({categories}:{categories: Categories[]}) {
+export default async function TodoInputForm({categories}:{categories: Categories[]}) {
 
   const {data: session} = useSession()
   // const userId = session?.user?.id
+  const currentUser = await _getUser(session?.user?.email as string)
   const form = useForm<ITodo>({
     defaultValues: {
-      UserId: session?.user?.id,
+      UserId: currentUser?.id,
       task: '',
       category: {
         title:'',
@@ -27,7 +29,7 @@ export default function TodoInputForm({categories}:{categories: Categories[]}) {
   });
   async function saveTodo() {
     let data = form.getValues();
-    data.UserId = session?.user?.id;
+    
     console.log(data.UserId)
     console.log(data);
     const todo = await _createTodo(data);

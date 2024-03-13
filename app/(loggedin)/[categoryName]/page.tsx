@@ -30,9 +30,9 @@ export default async function TodoPage({
   
   console.log(`the current session is ${session}`);
 
-  const currentUser = _getUser(session?.user?.email as any)
+  const currentUser = await _getUser(session?.user?.email as string);
 
-  const userId = currentUser?.id //session?.user?.id
+  const userId = currentUser?.id as number;
 
   const todos = await _getTodos(categoryName, userId);
 

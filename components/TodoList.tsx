@@ -16,13 +16,14 @@ import { useTheme } from "next-themes";
 import DottedMenu from "./dotted-menu";
 import { Input } from "./ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { _getUser } from "@/app/_actions/users.crud";
 
 
 interface Props {
   todos: ITodo[];
   categories: Categories[]
 }
-export default function TodoList({ todos, categories }: Props) {
+export default async function TodoList({ todos, categories }: Props) {
 
   
 
@@ -53,7 +54,7 @@ export default function TodoList({ todos, categories }: Props) {
   const { theme } =  useTheme()
   const {data: session} = useSession()
 
-  let userDetails = session?.user
+  let userDetails = await _getUser(session?.user?.email as string)
   return (
     <main onClick={(e)=>{
       e.stopPropagation()
