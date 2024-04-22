@@ -10,13 +10,14 @@ import { ITodo } from "@/types";
 
 
 
-export async function _getTodos(categoryName: string, UserId: number) {
- 
+export async function _getTodos(categoryName: string, email?: string) {
+
+  
   //Home, Completed, Today
   const where: Prisma.TodosWhereInput = {
     deletedAt: null,
     User: {
-      id: UserId,
+      email: email,
     }
   };
 

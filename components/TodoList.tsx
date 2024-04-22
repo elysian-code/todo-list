@@ -23,7 +23,21 @@ interface Props {
   todos: ITodo[];
   categories: Categories[]
 }
-export default async function TodoList({ todos, categories }: Props) {
+
+export interface userD {
+
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+}
+
+export interface UserDetail extends userD {
+  firstName?: string;
+  lastName?: string;
+} 
+
+
+export default function TodoList({ todos, categories }: Props) {
 
   
 
@@ -54,7 +68,21 @@ export default async function TodoList({ todos, categories }: Props) {
   const { theme } =  useTheme()
   const {data: session} = useSession()
 
-  let userDetails = await _getUser(session?.user?.email as string)
+  // const [userDetails, setUserDetails] = useState<userD>()
+
+  // ddosomething();
+  // useEffect(() => {
+    
+  //   (async () => {
+  //     let userDetails = await _getUser(session?.user?.email as string)
+  //     setUserDetails(userDetails as any)
+  //   })()
+  // },[])
+
+  const userDetails: UserDetail = {
+    ...session?.user,
+  }
+
   return (
     <main onClick={(e)=>{
       e.stopPropagation()
@@ -76,13 +104,15 @@ export default async function TodoList({ todos, categories }: Props) {
        
         </div>
       
-      <div className="w-2/3 mx-auto ">
-        <div onClick={()=>setIsOpen(false)} className="h-20 text-xl flex-col ">
+      <div className="w-2/3 mx-auto ">{ userDetails &&
+         (<div onClick={()=>setIsOpen(false)} className="h-20 text-xl flex-col ">
           <p className="capitalize font-bold text-slate-600">{ `${greetings}
            ${userDetails?.firstName} ${userDetails?.lastName}` }</p>
           <p className="text-slate-400 font-serif">{new Date().toDateString()}</p>
           
-        </div>
+        </div>)
+      }
+       
 
         <TodoInputForm categories={categories} />
         <ul className="flex flex-col mt-2 space-y-1">
@@ -120,7 +150,7 @@ export default async function TodoList({ todos, categories }: Props) {
                   setCheck(e as any)
                   setTimeout(async () => {
                     await upDateCompleted(todo.id, e as any)
-                  },1000)
+                  },500)
                 }}
                 id="terms"
                 
@@ -143,7 +173,7 @@ export default async function TodoList({ todos, categories }: Props) {
                  className="ml-2 font-semibold
                   leading-none peer-disabled:opacity-70 h-8"/>): (<label 
                 htmlFor="terms"
-                className={`${theme === 'dark'? 'text-gray-300': 'text-gray-600'}
+                className={`${theme === 'dark'? 'text-gray-300': 'text-gray-600'}${check && 'line-through line-through-animation'}
                  ml-2 font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70`}
               >
                 {todo.task}

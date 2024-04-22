@@ -4,10 +4,10 @@ import { prisma } from "@/db";
 import { revalidatePath } from "next/cache";
 
 
-interface IData{
+export interface IData{
   title: string;
   color:string;
-  UserId: number
+  UserId: number 
 }
 export async function _createCategory(data: IData) {
   await prisma.categories.create({

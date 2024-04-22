@@ -22,9 +22,10 @@ const Login = () => {
     });
 
   const { data } = useSession()
-
+  console.log(data)
   if(data){
     redirect('./home')
+    
   }
 
   const onSubmit =async (info: {email: string, password: string}) => {

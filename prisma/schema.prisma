@@ -22,7 +22,6 @@ datasource db {
   updatedAt DateTime?
   deletedAt DateTime?
   
-  
 }
 
 model Todos {

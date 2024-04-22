@@ -5,11 +5,9 @@ import { _getCount, _getTodos } from "../../_actions/todo.crud";
 import { prisma } from "@/db";
 import { getServerSession } from "next-auth/next"
 import { authOption } from "../../utils/auth";
-import { Icons } from "@/components/Icons";
-import { useTheme } from "next-themes";
-
 import Container from "@/components/container";
 import { _getUser } from "@/app/_actions/users.crud";
+import { revalidatePath } from "next/cache";
 
 
 export const metadata: Metadata = {
@@ -24,27 +22,31 @@ export default async function TodoPage({
   params: { categoryName },
 }: Props) {
   //   console.log(searchParams);
-    // const { categoryId } = searchParams;
+  // const { categoryId } = searchParams;
 
   const session = await getServerSession(authOption);
-  
+
   console.log(`the current session is ${session}`);
 
-  const currentUser = await _getUser(session?.user?.email as string);
+  interface SessionUser {
+    id: number;
+  }
 
-  const userId = currentUser?.id as number;
+  const userId = (session?.user as SessionUser)?.id;
 
-  const todos = await _getTodos(categoryName, userId);
+ 
 
-  const home = await _getCount("home", userId)
-  const completed = await _getCount("completed", userId)
-  const today = await _getCount("today", userId)
-  
-  const counts = {home: home, completed: completed, today: today}
-  
+  const todos = await _getTodos(categoryName, session?.user?.email as string);
+
+  const home = await _getCount("home", userId);
+  const completed = await _getCount("completed", userId);
+  const today = await _getCount("today", userId);
+
+  const counts = { home: home, completed: completed, today: today };
+
   const categories = await prisma.categories.findMany({
     where: {
-      UserId: userId
+      UserId: userId,
     },
     include: {
       _count: {
@@ -53,10 +55,9 @@ export default async function TodoPage({
             where: {
               OR: [{ completed: false }, { completed: null }],
               User: {
-                id: userId
+                email: session?.user?.email as string,
               },
-              deletedAt: null
-
+              deletedAt: null,
             },
           },
         },
@@ -65,17 +66,19 @@ export default async function TodoPage({
   });
 
   
-  
+
   return (
     <Container>
       <div className={` flex justify-between h-screen overflow-hidden`}>
-        <SideBar currentCategory={categoryName} defaultCount={counts} categories={categories}/>
-        <div className="w-full mx-auto">  
-          <TodoList todos={todos as any} categories={categories}/>
+        <SideBar
+          currentCategory={categoryName}
+          defaultCount={counts}
+          categories={categories}
+        />
+        <div className='w-full mx-auto'>{JSON.stringify(userId)}
+          <TodoList todos={todos as any} categories={categories} />
         </div>
-        
       </div>
     </Container>
-    
   );
 }

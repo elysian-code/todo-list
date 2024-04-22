@@ -11,13 +11,21 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-u
 import { ChevronDown } from "lucide-react";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
-import { _createCategory } from "@/app/_actions/categories.crud";
-import { Categories } from "@prisma/client";
+import { IData, _createCategory } from "@/app/_actions/categories.crud";
+import { Categories, User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useStateValue } from "@/app/toggleContext";
 import { _getCount } from "@/app/_actions/todo.crud";
 import { useTheme } from "next-themes";
+import { Session } from "next-auth";
 
+
+interface ICategory extends Categories {
+  count?: number | undefined;
+  _count?: {
+    todos: number | undefined;
+  }
+}
 
 interface Props {
   currentCategory: string;
@@ -25,10 +33,21 @@ interface Props {
     home: number | undefined;
     completed: number | undefined;
     today: number | undefined;
-};
-  categories: Categories[];
+  };
+  categories: ICategory[];
  
 }
+
+interface ExtendedUser {
+  id?: number | null | undefined;
+}
+
+interface MergedUser extends ExtendedUser {
+  name?: string | null | undefined;
+    email?: string | null | undefined;
+    image?: string | null | undefined; 
+}
+
 export default function SideBar({ currentCategory, defaultCount, categories}: Props) {
 
   const { theme } = useTheme();
@@ -38,7 +57,7 @@ export default function SideBar({ currentCategory, defaultCount, categories}: Pr
   const { isOpen, setIsOpen } = useStateValue();
 
   useEffect(()=>{
-    const handleOutsideClick = (e) => {
+    const handleOutsideClick = (e: any) => {
       if(isOpen && !e.currentTarget.closest('.nav-bar')){
         setIsOpen(false)
       }
@@ -47,9 +66,9 @@ export default function SideBar({ currentCategory, defaultCount, categories}: Pr
     document.removeEventListener('click', handleOutsideClick)
   },[isOpen])
 
-  const home = { title: "Home", Icon: Icons.home , todoCount: defaultCount.home}
-  const completed = { title: "Completed", Icon: Icons.completed, todoCount: defaultCount.completed }
-  const today = { title: "Today", Icon: Icons.today, todoCount: defaultCount.today}
+  const home = { title: "Home", Icon: Icons.home , _count: undefined, count: defaultCount.home }
+  const completed = { title: "Completed", Icon: Icons.completed, _count: undefined, count: defaultCount.completed }
+  const today = { title: "Today", Icon: Icons.today, _count: undefined, count: defaultCount.today}
   
   const allCategory = [home, completed, today, ...categories]
   // fixed top-0 left-0 w-250 h-full bg-gray-800 text-white z-10 lg:z-2000
@@ -59,7 +78,7 @@ export default function SideBar({ currentCategory, defaultCount, categories}: Pr
         
         {allCategory.map((category, index) => (
           <CategoryNavItem
-            todoCount={ category._count?.todos | category.todoCount }
+            todoCount={ category._count?.todos || category.count }
             
             currentCategory={currentCategory}
             key={index}
@@ -76,20 +95,25 @@ export default function SideBar({ currentCategory, defaultCount, categories}: Pr
 
 function NewTodoCategoryForm({}) {
   const { data: session } = useSession()
+  // console.log(`the first console ==> ${typeof(session?.user?.id)}`)
+  
+  const MergedUser: MergedUser = {
+    ...session?.user
+  }
   const form = useForm({
     defaultValues: {
       title: "",
       color: "",
-      UserId: session?.user?.id
+      UserId: MergedUser.id
     },
   });
   async function saveCategory() {
     // const data = form.getValues();
     let data = form.getValues();
-    data.UserId = session?.user?.id;
-    console.log(data.UserId)
-    console.log(data);
-    await _createCategory(data);
+    // data.UserId = session?.user?.id;
+    // console.log(data.UserId)
+    // console.log(data);
+    await _createCategory(data as IData);
     form.reset({
       color: "yellow-600",
     });
@@ -129,6 +153,7 @@ function NewTodoCategoryForm({}) {
           if (e.code == "Enter") {
             // console.log("..");
             saveCategory();
+            e.currentTarget.value = ''
           }
         }}
         className="border-none h-6 focus:outline-none focus:border-transparent"
@@ -177,7 +202,7 @@ function CategoryNavItem({
         </div>
 
         <div>
-          <span className={`${theme === 'dark'? 'bg-slate-900': 'bg-slate-300'}  w-6 h-6 px-1 rounded-full`}>{todoCount}</span>
+          <span className={`${theme === 'dark'? 'bg-slate-900': 'bg-slate-300'}  w-6 h-6 px-1 rounded-full`}>{todoCount || 0}</span>
         </div>
         
       </Link>

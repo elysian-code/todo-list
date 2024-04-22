@@ -11,12 +11,21 @@ import { Label } from "../ui/label";
 import { useFocusValue } from "@/app/toggleContext";
 import { useTheme } from "next-themes";
 import { _getUser } from "@/app/_actions/users.crud";
+import { useEffect, useState } from "react";
+import { UserDetail } from "../TodoList";
 
-export default async function TodoInputForm({categories}:{categories: Categories[]}) {
+interface Detail extends UserDetail {
+  id?: number;
+}
+
+export default function TodoInputForm({categories}:{categories: Categories[]}) {
 
   const {data: session} = useSession()
-  // const userId = session?.user?.id
-  const currentUser = await _getUser(session?.user?.email as string)
+  
+  const currentUser: Detail = {
+    ...session?.user,
+  }
+
   const form = useForm<ITodo>({
     defaultValues: {
       UserId: currentUser?.id,
@@ -27,6 +36,7 @@ export default async function TodoInputForm({categories}:{categories: Categories
       }
     },
   });
+
   async function saveTodo() {
     let data = form.getValues();
     
@@ -40,7 +50,7 @@ export default async function TodoInputForm({categories}:{categories: Categories
   const { theme } = useTheme()
   
   
-const { focus, setFocus } = useFocusValue()
+ const { focus, setFocus } = useFocusValue()
 
   
   return (
